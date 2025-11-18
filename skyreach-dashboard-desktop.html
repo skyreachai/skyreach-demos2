@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Desktop — SKY REACH AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 40px;
+            color: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            width: 1200px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+            padding: 30px 40px;
+            color: white;
+        }
+        
+        .dashboard-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .dashboard-content {
+            padding: 40px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #F3F4F6;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .metric-icon.blue { background: #DBEAFE; }
+        .metric-icon.green { background: #D1FAE5; }
+        .metric-icon.yellow { background: #FEF3C7; }
+        
+        .metric-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+        
+        .metric-comparison {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #D1FAE5;
+            color: #059669;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #F3F4F6;
+            margin-bottom: 40px;
+        }
+        
+        .chart-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 40px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .chart {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 40px 0 20px 0;
+            border-bottom: 2px solid #E5E7EB;
+            position: relative;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .bar {
+            width: 100%;
+            background: linear-gradient(180deg, #1E40AF 0%, #3B82F6 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .bar:hover {
+            filter: brightness(1.1);
+        }
+        
+        .bar-value {
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 700;
+            color: #1E40AF;
+            white-space: nowrap;
+        }
+        
+        .bar-label {
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #F3F4F6;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .chat-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .chat-messages {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message.user {
+            align-items: flex-start;
+        }
+        
+        .message.ai {
+            align-items: flex-end;
+        }
+        
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            max-width: 80%;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message.user .message-bubble {
+            background: #E5E7EB;
+            color: #111827;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message.ai .message-bubble {
+            background: #D1FAE5;
+            color: #065F46;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 4px;
+            padding: 0 8px;
+        }
+        
+        .chat-meta {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .chat-meta p {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #059669;
+            font-weight: 600;
+            background: #D1FAE5;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        .kpi-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #F3F4F6;
+        }
+        
+        .kpi-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+        
+        .kpi-list {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .kpi-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #F9FAFB;
+            border-left: 4px solid #00D084;
+            border-radius: 8px;
+        }
+        
+        .kpi-item span {
+            font-size: 15px;
+            color: #4B5563;
+        }
+        
+        .kpi-item strong {
+            color: #111827;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>📊 Panel de Control — Clínica Dental Sonrisas</h1>
+            <p class="subtitle">Última actualización: Hoy, 10:34 AM</p>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon blue">📞</div>
+                    <div class="metric-label">Llamadas Contestadas</div>
+                    <div class="metric-value">88%</div>
+                    <div class="metric-comparison">vs 65% antes</div>
+                    <div class="metric-change">↗ +23%</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon green">👤</div>
+                    <div class="metric-label">Pacientes Nuevos</div>
+                    <div class="metric-value">8</div>
+                    <div class="metric-comparison">+3 esta semana</div>
+                    <div class="metric-change">↗ +60%</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon yellow">💰</div>
+                    <div class="metric-label">Ingresos Capturados</div>
+                    <div class="metric-value">$6.2M</div>
+                    <div class="metric-comparison">+$1.8M vs mes anterior</div>
+                    <div class="metric-change">↗ +40%</div>
+                </div>
+            </div>
+            
+            <!-- Chart -->
+            <div class="chart-container">
+                <div class="chart-title">📈 Tendencia Semanal — Llamadas Atendidas</div>
+                <div class="chart">
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 164px;">
+                            <div class="bar-value">82%</div>
+                        </div>
+                        <div class="bar-label">Lunes</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 170px;">
+                            <div class="bar-value">85%</div>
+                        </div>
+                        <div class="bar-label">Martes</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 176px;">
+                            <div class="bar-value">88%</div>
+                        </div>
+                        <div class="bar-label">Miércoles</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 180px;">
+                            <div class="bar-value">90%</div>
+                        </div>
+                        <div class="bar-label">Jueves</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 178px;">
+                            <div class="bar-value">89%</div>
+                        </div>
+                        <div class="bar-label">Viernes</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 174px;">
+                            <div class="bar-value">87%</div>
+                        </div>
+                        <div class="bar-label">Sábado</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar" style="height: 176px;">
+                            <div class="bar-value">88%</div>
+                        </div>
+                        <div class="bar-label">Domingo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-section">
+                <!-- Chat Section -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3>💬 Conversación Reciente con María (WhatsApp AI)</h3>
+                    </div>
+                    <div class="chat-messages">
+                        <div class="message user">
+                            <div class="message-bubble">
+                                Hola, necesito agendar limpieza dental
+                            </div>
+                            <div class="message-time">15 Nov, 9:42 AM</div>
+                        </div>
+                        
+                        <div class="message ai">
+                            <div class="message-bubble">
+                                ¡Hola Ana! 😊 Con gusto te ayudo. Tengo disponibilidad el jueves 17 a las 3pm o viernes 18 a las 10am. ¿Cuál prefieres?
+                            </div>
+                            <div class="message-time">15 Nov, 9:42 AM</div>
+                        </div>
+                        
+                        <div class="message user">
+                            <div class="message-bubble">
+                                Jueves 3pm perfecto
+                            </div>
+                            <div class="message-time">15 Nov, 9:43 AM</div>
+                        </div>
+                        
+                        <div class="message ai">
+                            <div class="message-bubble">
+                                ✅ ¡Listo! Te agendé para el jueves 17 a las 3pm. Te envío recordatorio 24h antes.
+                            </div>
+                            <div class="message-time">15 Nov, 9:43 AM</div>
+                        </div>
+                    </div>
+                    <div class="chat-meta">
+                        <p>⚡ Respuesta automática en &lt;30 segundos</p>
+                    </div>
+                </div>
+                
+                <!-- KPIs Section -->
+                <div class="kpi-section">
+                    <h3>🎯 KPIs del Mes</h3>
+                    <div class="kpi-list">
+                        <div class="kpi-item">
+                            <span>⏱️</span>
+                            <span>Tiempo promedio: <strong>18 seg</strong></span>
+                        </div>
+                        <div class="kpi-item">
+                            <span>📅</span>
+                            <span>Citas agendadas: <strong>24</strong></span>
+                        </div>
+                        <div class="kpi-item">
+                            <span>📉</span>
+                            <span>No-show: <strong>-45%</strong></span>
+                        </div>
+                        <div class="kpi-item">
+                            <span>⭐</span>
+                            <span>Satisfacción: <strong>4.8/5</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
